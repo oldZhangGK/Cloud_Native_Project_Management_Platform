@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/pm_db}
+    username: ${DB_USERNAME:pm_user}
+    password: ${DB_PASSWORD:pm_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: auth
+        format_sql: true
+  flyway:
+    enabled: true
+    schemas: auth
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+server:
+  port: 8081
+
+app:
+  jwt:
+    private-key-path: ${JWT_PRIVATE_KEY_PATH:classpath:keys/private.pem}
+    public-key-path: ${JWT_PUBLIC_KEY_PATH:classpath:keys/public.pem}
+    access-token-expiry-seconds: ${JWT_ACCESS_EXPIRY:900}
+    refresh-token-expiry-seconds: ${JWT_REFRESH_EXPIRY:604800}
+  kafka:
+    topics:
+      user-events: user.events
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

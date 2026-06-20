@@ -1,0 +1,33 @@
+# Project-level ignores
+PROJECT_REQUIREMENTS.md
+System_Design/
+
+# Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# RSA private keys
+**/keys/private.pem
+**/*.p12
+**/*.jks
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Docker volumes
+docker-volumes/

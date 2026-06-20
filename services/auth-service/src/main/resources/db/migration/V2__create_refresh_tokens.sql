@@ -1,0 +1,13 @@
+CREATE TABLE auth.refresh_tokens (
+    id         UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id    UUID         NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(255) NOT NULL UNIQUE,
+    family_id  UUID         NOT NULL,
+    expires_at TIMESTAMPTZ  NOT NULL,
+    revoked    BOOLEAN      NOT NULL DEFAULT false,
+    revoked_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_refresh_tokens_user   ON auth.refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_family ON auth.refresh_tokens(family_id);

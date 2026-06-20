@@ -1,0 +1,4 @@
+target/
+*.class
+src/main/resources/keys/private.pem
+.env
