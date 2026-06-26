@@ -10,6 +10,7 @@ import com.pm.auth.dto.response.UserResponse;
 import com.pm.auth.exception.AccountDisabledException;
 import com.pm.auth.exception.InvalidCredentialsException;
 import com.pm.auth.exception.UserAlreadyExistsException;
+import com.pm.auth.event.UserEventPublisher;
 import com.pm.auth.repository.RoleRepository;
 import com.pm.auth.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,8 @@ class AuthServiceTest {
     @Mock private RoleRepository roleRepository;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private JwtService jwtService;
+    @Mock private RefreshTokenService refreshTokenService;
+    @Mock private UserEventPublisher userEventPublisher;
 
     @InjectMocks
     private AuthService authService;
@@ -109,6 +112,7 @@ class AuthServiceTest {
         when(passwordEncoder.matches("SecurePass1!", user.getPasswordHash())).thenReturn(true);
         when(jwtService.generateAccessToken(user)).thenReturn("access.token.here");
         when(jwtService.getAccessTokenExpirySeconds()).thenReturn(900L);
+        when(refreshTokenService.issueToken(any(UUID.class), any(UUID.class))).thenReturn("refresh.token.here");
 
         AuthResponse response = authService.login(request);
 

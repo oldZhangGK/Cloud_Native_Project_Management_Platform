@@ -70,7 +70,8 @@ class JwtServiceTest {
     void validateAndParseClaims_returnsCorrectRoles() {
         String token = jwtService.generateAccessToken(testUser);
         Claims claims = jwtService.validateAndParseClaims(token);
-        List<?> roles = claims.get("roles", List.class);
+        @SuppressWarnings("unchecked")
+        List<String> roles = (List<String>) claims.get("roles", List.class);
         assertThat(roles).containsExactly("DEVELOPER");
     }
 

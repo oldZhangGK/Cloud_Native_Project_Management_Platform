@@ -1,8 +1,10 @@
 package com.pm.auth.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +32,42 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccountDisabled(
             AccountDisabledException ex, HttpServletRequest request) {
         return build(HttpStatus.FORBIDDEN, "ACCOUNT_DISABLED", ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleTokenExpired(
+            TokenExpiredException ex, HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, "TOKEN_EXPIRED", ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(TokenReuseDetectedException.class)
+    public ResponseEntity<ErrorResponse> handleTokenReuse(
+            TokenReuseDetectedException ex, HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, "TOKEN_REUSE_DETECTED", ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(TokenInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleTokenInvalid(
+            TokenInvalidException ex, HttpServletRequest request) {
+        return build(HttpStatus.UNAUTHORIZED, "TOKEN_INVALID", ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(PasswordResetException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordReset(
+            PasswordResetException ex, HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, ex.getCode(), ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFound(
+            EntityNotFoundException ex, HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, "NOT_FOUND", ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(
+            AccessDeniedException ex, HttpServletRequest request) {
+        return build(HttpStatus.FORBIDDEN, "ACCESS_DENIED", "You do not have permission to perform this action", request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
